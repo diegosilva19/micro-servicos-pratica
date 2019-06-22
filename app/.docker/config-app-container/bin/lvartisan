@@ -1,0 +1,23 @@
+#!/bin/bash
+case $1 in
+install) 
+	cd /var/www
+	composer install 
+	chmod 0777 storage/ -R
+	cp .env.example .env
+	php artisan key:generate
+      # mysql -> config
+	sed -i 's/DB_HOST.*/DB_HOST=db/' .env && \
+	sed -i 's/DB_DATA.*/DB_DATABASE=laravel/' .env && \
+    sed -i 's/DB_US.*/DB_USERNAME=root/' .env && \
+    sed -i 's/DB_PA.*/DB_PASSWORD=root/' .env && \
+      # redis -> config
+    sed -i 's/IS_H.*/REDIS_HOST=redis/' .env
+    php artisan migrate
+
+;;#install application
+check)
+	echo "instalado ok"
+;;
+*) echo "Opcao Invalida!" ;;
+esac
